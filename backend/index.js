@@ -41,6 +41,37 @@ app.post('/books', async (request, response) => {
     }
 });
 
+//get all books from database
+app.get('/books', async (request, response) => {
+    try {
+        const books = await Book.find({});
+        return response.status(200).json({
+            count: books.length,
+            data: books
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message })
+    }
+});
+
+//get one book from database by id
+app.get('/books/:id', async (request, response) => {
+    try {
+
+        const { id } = request.params;
+
+        const book = await Book.findById(id);
+
+        return response.status(200).json({ book: book });
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message })
+    }
+});
+
 mongoose.connect(mongoUrl).then(() => {
     console.log("app connected to db");
     app.listen(PORT, () => {
